@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'io.freefair.lombok' version '8.1.0'
+}
+
+group 'com.ayeremeiev'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.logging.log4j:log4j-api:2.22.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.22.0'
+
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.22.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.28'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+    implementation group: 'com.google.guava', name: 'guava', version: '33.0.0-jre'
+}
+
+test {
+    useJUnitPlatform()
+}
