@@ -27,4 +27,18 @@ class Task4Test {
         assertEquals(18, counter);
     }
 
+    @Test
+    public void testSubtask2Short() {
+        Task4 task4 = new Task4();
+        long counter = task4.countForTask2(Task4Input.INPUT_TASK_2_SHORT);
+        assertEquals(9, counter);
+    }
+
+    @Test
+    public void testSubtask2Full() {
+        Task4 task4 = new Task4();
+        long counter = task4.countForTask2(Task4Input.INPUT_TASK2);
+        assertEquals(1998, counter);
+    }
+
 }

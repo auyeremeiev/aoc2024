@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Task4 {
     private static final String TASK_4_1_WORD = "XMAS";
+    private static final String TASK_4_2_WORD = "MAS";
 
     public long countForTask1(String input) {
         List<List<Character>> inputMatrix = readInput(input);
@@ -25,6 +26,18 @@ public class Task4 {
         List<List<Integer>> reverseDiagonalHashMatrix = generateReverseDiagonalHashMatrix(inputMatrix, wordLength);
 
         return countMatches(horizontalHashMatrix, diagonalHashMatrix, verticalHashMatrix, reverseDiagonalHashMatrix, TASK_4_1_WORD);
+    }
+
+    public long countForTask2(String input) {
+        List<List<Character>> inputMatrix = readInput(input);
+        int wordLength = TASK_4_2_WORD.length();
+
+        // getHash(TASK_4_2_WORD) = 76096
+        // getHash(reverse(TASK_4_2_WORD)) = 81855
+        List<List<Integer>> diagonalHashMatrix = generateDiagonalHashMatrix(inputMatrix, wordLength);
+        List<List<Integer>> reverseDiagonalHashMatrix = generateReverseDiagonalHashMatrix(inputMatrix, wordLength);
+
+        return countMatchesTask2(diagonalHashMatrix, reverseDiagonalHashMatrix, TASK_4_2_WORD);
     }
 
     private List<List<Integer>> generateHorizontalHashMatrix(List<List<Character>> inputMatrix, int wordLength) {
@@ -64,7 +77,8 @@ public class Task4 {
             // 0 1 2 3 4 -> 5 - 4 = 1 -> 0] 1 2 3 4
             for (int row = 1; row < numberOfRows - wordLength + 1; row++) {
                 currentVerticalHash = slideHashVertical(
-                        currentVerticalHash, inputMatrix, /* currentHashPosition */ row - 1, wordLength, column
+                        currentVerticalHash, inputMatrix, /* currentHashPosition */
+                        row - 1, wordLength, column
                 );
                 verticalHashMatrix.get(row).set(column, currentVerticalHash);
             }
@@ -118,7 +132,13 @@ public class Task4 {
         }
 
         for (int row = 0; row < numberOfRows - wordLength + 1; row++) {
-            int initialHash = getReverseDiagonalHash(inputMatrix, row, row + wordLength, numberOfColumns - 1, numberOfColumns - wordLength - 1);
+            int initialHash = getReverseDiagonalHash(
+                    inputMatrix,
+                    row,
+                    row + wordLength,
+                    numberOfColumns - 1,
+                    numberOfColumns - wordLength - 1
+            );
             hashMatrix.get(row).set(numberOfColumns - 1, initialHash);
         }
 
@@ -133,11 +153,7 @@ public class Task4 {
         return hashMatrix;
     }
 
-    private int slideHashVertical(int currentHash,
-                                  List<List<Character>> matrix,
-                                  int currentIndex,
-                                  int wordLength,
-                                  int column) {
+    private int slideHashVertical(int currentHash, List<List<Character>> matrix, int currentIndex, int wordLength, int column) {
         Character firstCharacter = matrix.get(currentIndex).get(column);
         int result = currentHash;        // hash[0] = arr[0]
         // hash[1] = arr[0] * 31 + arr[1]
@@ -174,11 +190,13 @@ public class Task4 {
         return result;
     }
 
-    public int getDiagonalHash(List<List<Character>> characters,
-                               int startRowIndex,
-                               int endRowIndex,
-                               int startColumnIndex,
-                               int endColumndIndex) {
+    public int getDiagonalHash(
+            List<List<Character>> characters,
+            int startRowIndex,
+            int endRowIndex,
+            int startColumnIndex,
+            int endColumndIndex
+    ) {
         int result = 0;
 
         int currentRow = startRowIndex;
@@ -194,11 +212,13 @@ public class Task4 {
         return result;
     }
 
-    public int getReverseDiagonalHash(List<List<Character>> characters,
-                                      int startRowIndex,
-                                      int endRowIndex,
-                                      int startColumnIndex,
-                                      int endColumnIndex) {
+    public int getReverseDiagonalHash(
+            List<List<Character>> characters,
+            int startRowIndex,
+            int endRowIndex,
+            int startColumnIndex,
+            int endColumnIndex
+    ) {
         int result = 0;
 
         int currentRow = startRowIndex;
@@ -214,11 +234,7 @@ public class Task4 {
         return result;
     }
 
-    public int slideHashDiagonal(int currentHash,
-                                 List<List<Character>> matrix,
-                                 int currentRow,
-                                 int currentColumn,
-                                 int wordLength) {
+    public int slideHashDiagonal(int currentHash, List<List<Character>> matrix, int currentRow, int currentColumn, int wordLength) {
         Character firstCharacter = matrix.get(currentRow).get(currentColumn);
         int result = currentHash;
 
@@ -226,11 +242,7 @@ public class Task4 {
         return result * 31 + matrix.get(currentRow + wordLength).get(currentColumn + wordLength);
     }
 
-    public int slideHashReverseDiagonal(int currentHash,
-                                        List<List<Character>> matrix,
-                                        int currentRow,
-                                        int currentColumn,
-                                        int wordLength) {
+    public int slideHashReverseDiagonal(int currentHash, List<List<Character>> matrix, int currentRow, int currentColumn, int wordLength) {
         Character firstCharacter = matrix.get(currentRow).get(currentColumn);
         int result = currentHash;
 
@@ -250,11 +262,13 @@ public class Task4 {
         return matrix;
     }
 
-    private int countMatches(List<List<Integer>> horizontalHashMatrix,
-                             List<List<Integer>> diagonalHashMatrix,
-                             List<List<Integer>> verticalHashMatrix,
-                             List<List<Integer>> reverseDiagonalHashMatrix,
-                             String word) {
+    private int countMatches(
+            List<List<Integer>> horizontalHashMatrix,
+            List<List<Integer>> diagonalHashMatrix,
+            List<List<Integer>> verticalHashMatrix,
+            List<List<Integer>> reverseDiagonalHashMatrix,
+            String word
+    ) {
         int result = 0;
 
         int numberOfRows = horizontalHashMatrix.size();
@@ -302,22 +316,62 @@ public class Task4 {
         return result;
     }
 
-//    private int countVerticalMatches(List<List<Integer>> verticalHashMatrix, int inputWordHash) {
-//        int result = 0;
-//
-//        int numberOfRows = verticalHashMatrix.size();
-//        int numberOfColumns = verticalHashMatrix.get(0).size();
-//
-//        for (int column = 0; column < numberOfColumns; column++) {
-//            for (int row = 0; row < numberOfRows; row++) {
-//                if (verticalHashMatrix.get(row).get(column) == inputWordHash) {
-//                    result++;
-//                }
-//            }
-//        }
-//
-//        return result;
-//    }
+    private int countMatchesTask2(List<List<Integer>> diagonalHashMatrix, List<List<Integer>> reverseDiagonalHashMatrix, String word) {
+        int result = 0;
+
+        int numberOfRows = diagonalHashMatrix.size();
+        int numberOfColumns = diagonalHashMatrix.get(0).size();
+
+        int wordHash = getHash(word);
+        int reversedHash = getHash(reverse(word));
+
+        // 0 1 2 3 4 (size = 5)
+        // size -2 = 3
+        // 0 1 2] 3 4
+        for (int row = 0; row < numberOfRows - 2; row++) {
+            for (int column = 0; column < numberOfColumns - 2; column++) {
+                // [1] _ 2
+                //  _  3 _
+                //  4  _ 5
+                // it will also cover this because it would have found it while look at the left most element
+                //  1  _ [2]
+                //  _  3  _
+                //  4  _  5
+                // It will cover this as well because the hash on [2] will equal hash on 4 if we'd calculate hash from 4 to 2 upwards and
+                // reversed. The same is with mirrored X
+                //   1   _  2
+                //   _   3  _
+                //  [4]  _  5
+                if (diagonalHashMatrix.get(row).get(column).equals(wordHash) ||
+                        diagonalHashMatrix.get(row).get(column).equals(reversedHash)) {
+
+                    if (reverseDiagonalHashMatrix.get(row).get(column + 2).equals(wordHash) ||
+                            reverseDiagonalHashMatrix.get(row).get(column + 2).equals(reversedHash)) {
+                        result++;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    //    private int countVerticalMatches(List<List<Integer>> verticalHashMatrix, int inputWordHash) {
+    //        int result = 0;
+    //
+    //        int numberOfRows = verticalHashMatrix.size();
+    //        int numberOfColumns = verticalHashMatrix.get(0).size();
+    //
+    //        for (int column = 0; column < numberOfColumns; column++) {
+    //            for (int row = 0; row < numberOfRows; row++) {
+    //                if (verticalHashMatrix.get(row).get(column) == inputWordHash) {
+    //                    result++;
+    //                }
+    //            }
+    //        }
+    //
+    //        return result;
+    //    }
 
     private List<Character> convert(String str) {
         return str.chars().mapToObj(it -> (char) it).toList();
@@ -330,7 +384,6 @@ public class Task4 {
     public List<List<Character>> readInput(String input) {
         List<String> lines = Arrays.asList(input.trim().split("\\n"));
 
-        return lines.stream().map(String::chars)
-                .map(it -> it.mapToObj(c -> (char) c).toList()).toList();
+        return lines.stream().map(String::chars).map(it -> it.mapToObj(c -> (char) c).toList()).toList();
     }
 }
