@@ -62,6 +62,12 @@ public class Task6Data {
     }
 
     public Optional<Pair<Integer, Integer>> getClosestObstaclesOnX(int x, int startingY, Direction direction) {
+        return getClosestObstaclesOnXWithExtraObstacle(x, startingY, direction, null);
+    }
+
+    public Optional<Pair<Integer, Integer>> getClosestObstaclesOnXWithExtraObstacle(
+            int x, int startingY, Direction direction, Pair<Integer, Integer> extraObstacle
+    ) {
         Pair<Integer, Integer> startingPoint = new Pair<>(x, startingY);
         if (!List.of(Direction.RIGHT, Direction.LEFT).contains(direction)) {
             throw new IllegalStateException("Direction should be horizontal");
@@ -70,7 +76,10 @@ public class Task6Data {
         if (!obstaclesOnX.containsKey(x)) {
             return Optional.empty();
         }
-        List<Pair<Integer, Integer>> obstacles = obstaclesOnX.get(x);
+        List<Pair<Integer, Integer>> obstacles = new ArrayList<>(obstaclesOnX.get(x));
+        if (extraObstacle != null && extraObstacle.getLeft().equals(x)) {
+            obstacles.add(extraObstacle);
+        }
 
         Pair<Integer, Integer> closestObstacle = null;
         int curSmallestDistance = Integer.MAX_VALUE;
@@ -89,6 +98,12 @@ public class Task6Data {
     }
 
     public Optional<Pair<Integer, Integer>> getClosestObstaclesOnY(int startingX, int y, Direction direction) {
+        return getClosestObstaclesOnYWithExtraObstacle(startingX, y, direction, null);
+    }
+
+    public Optional<Pair<Integer, Integer>> getClosestObstaclesOnYWithExtraObstacle(
+            int startingX, int y, Direction direction, Pair<Integer, Integer> extraObstacle
+    ) {
         Pair<Integer, Integer> startingPoint = new Pair<>(startingX, y);
         if (!List.of(Direction.UP, Direction.DOWN).contains(direction)) {
             throw new IllegalStateException("Direction should be vertical");
@@ -97,7 +112,10 @@ public class Task6Data {
         if (!obstaclesOnY.containsKey(y)) {
             return Optional.empty();
         }
-        List<Pair<Integer, Integer>> obstacles = obstaclesOnY.get(y);
+        List<Pair<Integer, Integer>> obstacles = new ArrayList<>(obstaclesOnY.get(y));
+        if (extraObstacle != null && extraObstacle.getRight().equals(y)) {
+            obstacles.add(extraObstacle);
+        }
 
         Pair<Integer, Integer> closestObstacle = null;
         int curSmallestDistance = Integer.MAX_VALUE;
@@ -131,7 +149,7 @@ public class Task6Data {
         return obstacle.getRight() < startingY && direction == Direction.LEFT;
     }
 
-    public static int getDistance(Pair<Integer, Integer> pointA,  Pair<Integer, Integer> pointB) {
+    public static int getDistance(Pair<Integer, Integer> pointA, Pair<Integer, Integer> pointB) {
         if (pointA.getLeft().equals(pointB.getLeft())) {
             return Math.abs(pointA.getRight() - pointB.getRight());
         } else if (pointA.getRight().equals(pointB.getRight())) {

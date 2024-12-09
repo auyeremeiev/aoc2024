@@ -35,13 +35,42 @@ public class Task6 {
         return result;
     }
 
+    public static int getTask2ResultJumpingSolution(String input) {
+        Task6Data data = parseInput(input);
+        long currentMilis = System.currentTimeMillis();
+        int result = calculateTask2JumpingSolution(data);
+        long took = System.currentTimeMillis() - currentMilis;
+        System.out.println("Took " + took + "ms");
+
+        return result;
+    }
+
+    private static int calculateTask2JumpingSolution(Task6Data data) {
+        Pair<Integer, Integer> currentPoint = data.getStartingPoint();
+        Direction currentDirection = Direction.UP;
+        List<Pair<Integer, Integer>> loopMakingObstacles = new ArrayList<>();
+        Task6TripResult tripResult = getNextTripPoint(currentPoint, data, currentDirection);
+        while (tripResult.getBumpType() == OBSTACLE) {
+            Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
+            loopMakingObstacles.addAll(getLoopingObstacles(currentPoint, nextPoint, data));
+            currentDirection = switchDirection(currentDirection);
+            currentPoint = nextPoint;
+            tripResult = getNextTripPoint(currentPoint, data, currentDirection);
+        }
+
+        Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
+        loopMakingObstacles.addAll(getLoopingObstacles(currentPoint, nextPoint, data));
+
+        return loopMakingObstacles.size();
+    }
+
     private static int calculateLengthSimpleSolution(Task6Data data) {
         List<List<Boolean>> visitedCells = createBooleanMatrix(data.getHeight(), data.getWidth());
 
         Pair<Integer, Integer> currentPoint = data.getStartingPoint();
         Line line = new Line(currentPoint);
         Direction currentDirection = Direction.UP;
-        Task6TripResult tripResult = makeSingleTrip(currentPoint, data, currentDirection);
+        Task6TripResult tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         List<Pair<Integer, Integer>> intersections = new ArrayList<>();
         ;
         while (tripResult.getBumpType() == OBSTACLE) {
@@ -50,7 +79,7 @@ public class Task6 {
             line.addPoint(nextPoint);
             currentDirection = switchDirection(currentDirection);
             currentPoint = nextPoint;
-            tripResult = makeSingleTrip(currentPoint, data, currentDirection);
+            tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         }
 
         intersections.addAll(fillWithVisited(visitedCells, currentPoint, tripResult.getNextPoint()));
@@ -64,7 +93,7 @@ public class Task6 {
         Pair<Integer, Integer> currentPoint = data.getStartingPoint();
         Line line = new Line(currentPoint);
         Direction currentDirection = Direction.UP;
-        Task6TripResult tripResult = makeSingleTrip(currentPoint, data, currentDirection);
+        Task6TripResult tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         Set<Pair<Integer, Integer>> intersections = new HashSet<>();
         while (tripResult.getBumpType() == OBSTACLE) {
             Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
@@ -72,7 +101,7 @@ public class Task6 {
             line.addPoint(nextPoint);
             currentDirection = switchDirection(currentDirection);
             currentPoint = nextPoint;
-            tripResult = makeSingleTrip(currentPoint, data, currentDirection);
+            tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         }
 
         intersections.addAll(line.getIntersections(tripResult.getNextPoint()));
@@ -83,16 +112,96 @@ public class Task6 {
         return line.getLength() - intersections.size();
     }
 
-    private static Task6TripResult makeSingleTrip(Pair<Integer, Integer> currentPoint,
-                                                  Task6Data data,
-                                                  Direction direction) {
+    private static List<Pair<Integer, Integer>> getLoopingObstacles(
+            Pair<Integer, Integer> currentPoint,
+            Pair<Integer, Integer> nextPoint,
+            Task6Data data
+    ) {
+        Direction direction = Line.getDirection(currentPoint, nextPoint);
+        List<Pair<Integer, Integer>> result = new ArrayList<>();
+        Pair<Integer, Integer> newObstacle;
+        switch (direction) {
+            case UP -> {
+                for (int i = currentPoint.getLeft() - 1; i >= nextPoint.getLeft(); i--) {
+                    newObstacle = new Pair<>(i, currentPoint.getRight());
+                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                        result.add(newObstacle);
+                    }
+                }
+            }
+            case DOWN -> {
+                for (int i = currentPoint.getLeft() + 1; i <= nextPoint.getLeft(); i++) {
+                    newObstacle = new Pair<>(i, currentPoint.getRight());
+                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                        result.add(newObstacle);
+                    }
+                }
+            }
+            case RIGHT -> {
+                for (int i = currentPoint.getRight() + 1; i <= nextPoint.getRight(); i++) {
+                    newObstacle = new Pair<>(currentPoint.getLeft(), i);
+                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                        result.add(newObstacle);
+                    }
+                }
+            }
+            case LEFT -> {
+                for (int i = currentPoint.getRight() - 1; i >= nextPoint.getRight(); i--) {
+                    newObstacle = new Pair<>(currentPoint.getLeft(), i);
+                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                        result.add(newObstacle);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static boolean willCreateLoop(
+            Pair<Integer, Integer> startingPoint,
+            Pair<Integer, Integer> extraObstacle,
+            Direction direction,
+            Task6Data data) {
+        Direction currentDirection = direction;
+        Set<Pair<Integer, Integer>> visitedPoints = new HashSet<>();
+        visitedPoints.add(startingPoint); // we start at the obstacle and turn immediately
+        Pair<Integer, Integer> currentPoint = startingPoint;
+        Task6TripResult tripResult = getNextTripPointWithExtraObstacle(startingPoint, extraObstacle, data, direction);
+        while(tripResult.getBumpType() != END_OF_FIELD) {
+            Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
+            if (visitedPoints.contains(nextPoint)
+                    && !currentPoint.equals(nextPoint)
+            ) {
+                return true;
+            }
+            currentPoint = nextPoint;
+            visitedPoints.add(currentPoint);
+            currentDirection = switchDirection(currentDirection);
+            tripResult = getNextTripPointWithExtraObstacle(currentPoint, extraObstacle, data, currentDirection);
+        }
+
+        return false;
+    }
+
+    private static Task6TripResult getNextTripPoint(Pair<Integer, Integer> currentPoint,
+                                                    Task6Data data,
+                                                    Direction direction) {
+        return getNextTripPointWithExtraObstacle(currentPoint, null, data, direction);
+    }
+
+    private static Task6TripResult getNextTripPointWithExtraObstacle(
+            Pair<Integer, Integer> currentPoint,
+            Pair<Integer, Integer> extraObstacle,
+            Task6Data data,
+            Direction direction) {
         Optional<Pair<Integer, Integer>> closestObstacle;
         if (direction.isHorizontal()) {
-            closestObstacle = data.getClosestObstaclesOnX(
-                    currentPoint.getLeft(), currentPoint.getRight(), direction);
+            closestObstacle = data.getClosestObstaclesOnXWithExtraObstacle(
+                    currentPoint.getLeft(), currentPoint.getRight(), direction, extraObstacle);
         } else {
-            closestObstacle = data.getClosestObstaclesOnY(
-                    currentPoint.getLeft(), currentPoint.getRight(), direction);
+            closestObstacle = data.getClosestObstaclesOnYWithExtraObstacle(
+                    currentPoint.getLeft(), currentPoint.getRight(), direction, extraObstacle);
         }
 
         if (closestObstacle.isEmpty()) {
