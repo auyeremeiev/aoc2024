@@ -48,7 +48,7 @@ public class Task6 {
     private static int calculateTask2JumpingSolution(Task6Data data) {
         Pair<Integer, Integer> currentPoint = data.getStartingPoint();
         Direction currentDirection = Direction.UP;
-        List<Pair<Integer, Integer>> loopMakingObstacles = new ArrayList<>();
+        Set<Pair<Integer, Integer>> loopMakingObstacles = new HashSet<>();
         Task6TripResult tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         while (tripResult.getBumpType() == OBSTACLE) {
             Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
