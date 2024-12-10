@@ -1,5 +1,6 @@
 package aoc2024;
 
+import aoc2024.inputs.Task3Input;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

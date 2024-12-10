@@ -1,4 +1,4 @@
-package aoc2024;
+package aoc2024.inputs;
 
 public class Task4Input {
 
