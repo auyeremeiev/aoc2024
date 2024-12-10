@@ -48,18 +48,23 @@ public class Task6 {
     private static int calculateTask2JumpingSolution(Task6Data data) {
         Pair<Integer, Integer> currentPoint = data.getStartingPoint();
         Direction currentDirection = Direction.UP;
+        Set<Pair<Integer, Integer>> visitedPoints = new HashSet<>();
         Set<Pair<Integer, Integer>> loopMakingObstacles = new HashSet<>();
         Task6TripResult tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         while (tripResult.getBumpType() == OBSTACLE) {
             Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
-            loopMakingObstacles.addAll(getLoopingObstacles(currentPoint, nextPoint, data));
+            if (!currentPoint.equals(nextPoint)) {
+                loopMakingObstacles.addAll(getLoopingObstacles(currentPoint, nextPoint, data, visitedPoints));
+            }
             currentDirection = switchDirection(currentDirection);
             currentPoint = nextPoint;
             tripResult = getNextTripPoint(currentPoint, data, currentDirection);
         }
 
         Pair<Integer, Integer> nextPoint = tripResult.getNextPoint();
-        loopMakingObstacles.addAll(getLoopingObstacles(currentPoint, nextPoint, data));
+        if (!currentPoint.equals(nextPoint)) {
+            loopMakingObstacles.addAll(getLoopingObstacles(currentPoint, nextPoint, data, visitedPoints));
+        }
 
         return loopMakingObstacles.size();
     }
@@ -112,45 +117,50 @@ public class Task6 {
         return line.getLength() - intersections.size();
     }
 
-    private static List<Pair<Integer, Integer>> getLoopingObstacles(
+    private static Set<Pair<Integer, Integer>> getLoopingObstacles(
             Pair<Integer, Integer> currentPoint,
             Pair<Integer, Integer> nextPoint,
-            Task6Data data
-    ) {
+            Task6Data data,
+            Set<Pair<Integer, Integer>> excludedPoints) {
+        excludedPoints.add(currentPoint);
         Direction direction = Line.getDirection(currentPoint, nextPoint);
-        List<Pair<Integer, Integer>> result = new ArrayList<>();
+        Set<Pair<Integer, Integer>> result = new HashSet<>();
         Pair<Integer, Integer> newObstacle;
         switch (direction) {
             case UP -> {
                 for (int i = currentPoint.getLeft() - 1; i >= nextPoint.getLeft(); i--) {
                     newObstacle = new Pair<>(i, currentPoint.getRight());
-                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                    if (!excludedPoints.contains(newObstacle) && willCreateLoop(currentPoint, newObstacle, direction, data)) {
                         result.add(newObstacle);
                     }
+                    excludedPoints.add(newObstacle);
                 }
             }
             case DOWN -> {
                 for (int i = currentPoint.getLeft() + 1; i <= nextPoint.getLeft(); i++) {
                     newObstacle = new Pair<>(i, currentPoint.getRight());
-                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                    if (!excludedPoints.contains(newObstacle) && willCreateLoop(currentPoint, newObstacle, direction, data)) {
                         result.add(newObstacle);
                     }
+                    excludedPoints.add(newObstacle);
                 }
             }
             case RIGHT -> {
                 for (int i = currentPoint.getRight() + 1; i <= nextPoint.getRight(); i++) {
                     newObstacle = new Pair<>(currentPoint.getLeft(), i);
-                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                    if (!excludedPoints.contains(newObstacle) && willCreateLoop(currentPoint, newObstacle, direction, data)) {
                         result.add(newObstacle);
                     }
+                    excludedPoints.add(newObstacle);
                 }
             }
             case LEFT -> {
                 for (int i = currentPoint.getRight() - 1; i >= nextPoint.getRight(); i--) {
                     newObstacle = new Pair<>(currentPoint.getLeft(), i);
-                    if (willCreateLoop(currentPoint, newObstacle, direction, data)) {
+                    if (!excludedPoints.contains(newObstacle) && willCreateLoop(currentPoint, newObstacle, direction, data)) {
                         result.add(newObstacle);
                     }
+                    excludedPoints.add(newObstacle);
                 }
             }
         }
@@ -175,8 +185,8 @@ public class Task6 {
             ) {
                 return true;
             }
+            visitedPoints.add(nextPoint);
             currentPoint = nextPoint;
-            visitedPoints.add(currentPoint);
             currentDirection = switchDirection(currentDirection);
             tripResult = getNextTripPointWithExtraObstacle(currentPoint, extraObstacle, data, currentDirection);
         }

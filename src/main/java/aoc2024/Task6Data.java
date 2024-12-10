@@ -73,17 +73,20 @@ public class Task6Data {
             throw new IllegalStateException("Direction should be horizontal");
         }
 
-        if (!obstaclesOnX.containsKey(x)) {
-            return Optional.empty();
+        List<Pair<Integer, Integer>> obstacles = new ArrayList<>();
+        if (obstaclesOnX.containsKey(x)) {
+            obstacles.addAll(obstaclesOnX.get(x));
         }
-        List<Pair<Integer, Integer>> obstacles = new ArrayList<>(obstaclesOnX.get(x));
         if (extraObstacle != null && extraObstacle.getLeft().equals(x)) {
             obstacles.add(extraObstacle);
         }
 
+        if (obstacles.isEmpty()) {
+            return Optional.empty();
+        }
+
         Pair<Integer, Integer> closestObstacle = null;
         int curSmallestDistance = Integer.MAX_VALUE;
-        // it's annoying to use fori
         for (Pair<Integer, Integer> obstacle : obstacles) {
             int curDistance = getDistance(startingPoint, obstacle);
             if ((isOnTheRightAndHeadingRight(startingY, direction, obstacle) ||
@@ -109,17 +112,21 @@ public class Task6Data {
             throw new IllegalStateException("Direction should be vertical");
         }
 
-        if (!obstaclesOnY.containsKey(y)) {
-            return Optional.empty();
+        List<Pair<Integer, Integer>> obstacles = new ArrayList<>();
+        if (obstaclesOnY.containsKey(y)) {
+            obstacles.addAll(obstaclesOnY.get(y));
         }
-        List<Pair<Integer, Integer>> obstacles = new ArrayList<>(obstaclesOnY.get(y));
+
         if (extraObstacle != null && extraObstacle.getRight().equals(y)) {
             obstacles.add(extraObstacle);
         }
 
+        if (obstacles.isEmpty()) {
+            return Optional.empty();
+        }
+
         Pair<Integer, Integer> closestObstacle = null;
         int curSmallestDistance = Integer.MAX_VALUE;
-        // it's annoying to use fori
         for (Pair<Integer, Integer> obstacle : obstacles) {
             int curDistance = getDistance(startingPoint, obstacle);
             if ((isAboveAndHeadingUp(startingX, direction, obstacle) ||
