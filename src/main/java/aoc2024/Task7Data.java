@@ -3,11 +3,11 @@ package aoc2024;
 import java.util.Arrays;
 import java.util.List;
 
-public class Task7_1Data {
+public class Task7Data {
     private long result;
     private List<Long> numbers;
 
-    public Task7_1Data(long result, List<Long> numbers) {
+    public Task7Data(long result, List<Long> numbers) {
         this.result = result;
         this.numbers = numbers;
     }
@@ -20,12 +20,12 @@ public class Task7_1Data {
         return numbers;
     }
 
-    public static List<Task7_1Data> parseInput(String input) {
+    public static List<Task7Data> parseInput(String input) {
         return Arrays.stream(input.trim().split("\\n"))
-                .map(it -> Arrays.stream(it.split(":")).toList())
-                .map(it -> new Task7_1Data(
+                .map(it -> Arrays.stream(it.split(": ")).toList())
+                .map(it -> new Task7Data(
                         Long.parseLong(it.get(0)),
-                        Arrays.stream(it.get(1).split("\\s")).map(Long::parseLong).toList()
+                        Arrays.stream(it.get(1).split("\\s{1,}")).map(Long::parseLong).toList()
                 )).toList();
     }
 
