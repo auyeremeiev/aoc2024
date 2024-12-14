@@ -34,10 +34,7 @@ public class Pair<L, R> {
 
     @Override
     public String toString() {
-        return "Pair{" +
-                "left=" + left +
-                ", right=" + right +
-                '}';
+        return "(" + left + "," + right + ')';
     }
 
     public static <L, R> Pair<L, R> of(L left, R right) {

@@ -2,6 +2,7 @@ package aoc2024.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,5 +89,27 @@ public class ListUtils {
         }
 
         return builder.toString();
+    }
+
+    public static void addToSortedList(List<Integer> list, Integer newElement) {
+        addToSortedList(list, newElement, Integer::compare);
+    }
+
+    public static <T> void addToSortedList(List<T> list, T newElement, Comparator<T> comparator) {
+        int i = 0;
+        while (i < list.size() && comparator.compare(newElement, list.get(i)) < 0) {
+            i++;
+        }
+
+        if (i == list.size()) {
+            list.add(newElement);
+        } else {
+            list.add(i, newElement);
+        }
+    }
+
+    public static <T> String printList(List<T> list) {
+        List<String> stringifiedList = list.stream().map(Object::toString).toList();
+        return "[" + String.join(", ", stringifiedList) + "]";
     }
 }
