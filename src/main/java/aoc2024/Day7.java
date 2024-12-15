@@ -2,6 +2,7 @@ package aoc2024;
 
 import aoc2024.common.Pair;
 import aoc2024.common.StopWatchGauge;
+import aoc2024.common.Task;
 import aoc2024.helpers.Day7Data;
 import aoc2024.inputs.Day7Input;
 import java.util.HashSet;
@@ -218,8 +219,8 @@ public class Day7 {
 
     public static void measureTimeTask1() {
         final Day7 day7 = new Day7(Day7Input.TASK1_FULL);
-        StopWatchGauge.runReliably(() -> day7.findValidEquationsTask1());
+        StopWatchGauge.runReliably(day7::findValidEquationsTask1, Task.FIRST);
         final Day7 day7_2 = new Day7(Day7Input.TASK1_FULL);
-        StopWatchGauge.runReliably(() -> day7_2.findValidEquationsTask2());
+        StopWatchGauge.runReliably(day7_2::findValidEquationsTask2, Task.SECOND);
     }
 }

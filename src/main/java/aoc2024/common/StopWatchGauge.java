@@ -11,15 +11,15 @@ import org.apache.logging.log4j.Logger;
 public class StopWatchGauge {
     private static final Logger log = LogManager.getLogger(StopWatchGauge.class);
 
-    public static <T> T run(Supplier<T> supplier) {
-        return run(supplier, 0);
+    public static <T> T run(Supplier<T> supplier, Task task) {
+        return run(supplier, 0, task);
     }
 
-    public static <T> T runReliably(Supplier<T> supplier) {
-        return run(supplier, 100);
+    public static <T> T runReliably(Supplier<T> supplier, Task task) {
+        return run(supplier, 100, task);
     }
 
-    public static <T> T run(Supplier<T> supplier, int executionRepeats) {
+    public static <T> T run(Supplier<T> supplier, int executionRepeats, Task task) {
         if (executionRepeats == 0) {
             throw new IllegalArgumentException("executionRepeats cannot be 0");
         }
@@ -32,7 +32,8 @@ public class StopWatchGauge {
             results.add(supplier.get());
         }
         stopWatch.stop();
-        log.log(Level.INFO, "Time elapsed: " + stopWatch.getNanoTime() / 1000000 / executionRepeats + "ms");
+        log.log(Level.INFO, task.getTaskTextName() +
+                ": time elapsed: " + stopWatch.getNanoTime() / 1000000 / executionRepeats + "ms");
 
         if (results.isEmpty()) {
             throw new IllegalStateException("Executions results list is empty");

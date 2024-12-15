@@ -95,9 +95,16 @@ public class ListUtils {
         addToSortedList(list, newElement, Integer::compare);
     }
 
+    // Can be rewritten to log(n)
     public static <T> void addToSortedList(List<T> list, T newElement, Comparator<T> comparator) {
+        if (list.isEmpty()) {
+            list.add(newElement);
+            return;
+        }
+
         int i = 0;
-        while (i < list.size() && comparator.compare(newElement, list.get(i)) < 0) {
+
+        while (i < list.size() && comparator.compare(newElement, list.get(i)) > 0) {
             i++;
         }
 
@@ -106,6 +113,50 @@ public class ListUtils {
         } else {
             list.add(i, newElement);
         }
+    }
+
+    public static boolean removeElement(List<Integer> list, Integer element) {
+        Optional<Integer> elementIndex = binarySearch(list, element);
+        if (elementIndex.isEmpty()) {
+            throw new IllegalStateException("Didn't find an element");
+        }
+
+        return list.remove(element);
+    }
+
+    public static Optional<Integer> binarySearch(List<Integer> list, Integer element) {
+        return binarySearch(list, element, Integer::compareTo);
+    }
+
+    public static <T> Optional<Integer> binarySearch(List<T> list, T element, Comparator<T> comparator) {
+        if (list.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int l = 0;
+        int r = list.size() - 1;
+        // 0 [{[1] | {2 3}] 4 => m = (1 + 4) / 2 - 1 = 1 => l = 1, r = m = 1 (end) or l = 3 and r = 4
+        // 0 [{1 [2]} | {3 4}] => m = (1 + 5) / 2 - 1 = 2 => l = 1, r = m = 2 or l = 3 and r = 5
+        // 0 [{1} | {2}] 3 4] => m = (1 + 2) / 2 - 1 = 0 (incorrect)
+
+        // 0 [{1 [2]} {3}] 4 => m = (1 + 3) / 2 = 2 => l = 1, r = m - 1 = 1 or l = 3 and r = 3
+        // 0 [{1 [2]} | {3 4}] => m = (1 + 4) / 2 = 2 => l = 1, r = m - 1 = 1 or l = 3 and r = 4
+        // 0 [{[1]} | {2}] 3 4] => m = (1 + 2) / 2 = 1 => l = 1, r = 0 (end) or l = 2, r = 2
+        // 0 [{1}] 2 3 4] => m = (1 + 1) / 2 = 1.
+        //      if {1} is less than x then l = 1, r = 0 (end);
+        //      if {1} is greater than x then l = 2, r = 1 (end)
+        while (l <= r) {
+            int m = (l + r) / 2;
+            if (comparator.compare(list.get(m), element) == 0) {
+                return Optional.of(m);
+            } else if (comparator.compare(list.get(m), element) > 0) {
+                r = m - 1;
+            } else {
+                l = m + 1;
+            }
+        }
+
+        return Optional.empty();
     }
 
     public static <T> String printList(List<T> list) {

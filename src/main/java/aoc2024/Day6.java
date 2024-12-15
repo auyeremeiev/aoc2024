@@ -5,6 +5,7 @@ import aoc2024.common.Line;
 import aoc2024.common.Pair;
 
 import aoc2024.common.StopWatchGauge;
+import aoc2024.common.Task;
 import aoc2024.helpers.Day6Data;
 import aoc2024.helpers.Day6Element;
 import aoc2024.helpers.Day6TripResult;
@@ -23,17 +24,17 @@ public class Day6 {
 
     public static int getTask1Result(String input) {
         Day6Data day6Data = parseInput(input);
-        return StopWatchGauge.runReliably(() -> calculateLength(day6Data));
+        return StopWatchGauge.runReliably(() -> calculateLength(day6Data), Task.FIRST);
     }
 
     public static int getTask1ResultSimpleSolution(String input) {
         Day6Data data = parseInput(input);
-        return StopWatchGauge.runReliably(() -> calculateLengthSimpleSolution(data));
+        return StopWatchGauge.runReliably(() -> calculateLengthSimpleSolution(data), Task.FIRST);
     }
 
     public static int getTask2ResultJumpingSolution(String input) {
         Day6Data data = parseInput(input);
-        return StopWatchGauge.run(() -> calculateTask2JumpingSolution(data), 3);
+        return StopWatchGauge.run(() -> calculateTask2JumpingSolution(data), 3, Task.SECOND);
     }
 
     private static int calculateTask2JumpingSolution(Day6Data data) {
