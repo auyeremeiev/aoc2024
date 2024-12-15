@@ -33,7 +33,7 @@ public class StopWatchGauge {
         }
         stopWatch.stop();
         log.log(Level.INFO, task.getTaskTextName() +
-                ": time elapsed: " + stopWatch.getNanoTime() / 1000000 / executionRepeats + "ms");
+                ": time elapsed: " + stopWatch.getNanoTime() / 1000000d / executionRepeats + "ms");
 
         if (results.isEmpty()) {
             throw new IllegalStateException("Executions results list is empty");

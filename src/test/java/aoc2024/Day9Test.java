@@ -1,6 +1,8 @@
 package aoc2024;
 
 import aoc2024.common.Pair;
+import aoc2024.common.StopWatchGauge;
+import aoc2024.common.Task;
 import aoc2024.helpers.Day9EmptyBlock;
 import aoc2024.helpers.Day9FileBlock;
 import aoc2024.inputs.Day9Input;
@@ -51,6 +53,7 @@ class Day9Test {
                 ), new Day9("0330").getTask2ResultNumbers()
         );
         assertEquals(3, new Day9("0330").getTask2ResultSum());
+        assertEquals(31, new Day9("0303412").getTask2ResultSum());
 
         assertEquals(169, new Day9("1313165").getTask2ResultSum());
         assertEquals(1, new Day9("111").getTask2ResultSum());
@@ -100,7 +103,7 @@ class Day9Test {
     @Test
     public void testTask2Full() {
         Day9 day9 = new Day9(Day9Input.TASK_2_FULL);
-        assertEquals(6288707484810L, day9.getTask1ResultSum());
+        assertEquals(6311837662089L, day9.getTask2ResultSum());
     }
 
     @Test
@@ -109,5 +112,9 @@ class Day9Test {
         assertEquals(97898222299196L, day9.getTask2ResultSum());
     }
 
-
+    @Test
+    public void measureSpeed() {
+        StopWatchGauge.run(() -> new Day9(Day9Input.TASK_1_FULL).getTask1ResultSum(), 10, Task.SECOND);
+        StopWatchGauge.run(() -> new Day9(Day9Input.TASK_2_FULL).getTask2ResultSum(), 10, Task.SECOND);
+    }
 }

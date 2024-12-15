@@ -3,6 +3,8 @@ package aoc2024;
 import aoc2024.common.PairWithoutOrder;
 import aoc2024.common.Point;
 
+import aoc2024.common.StopWatchGauge;
+import aoc2024.common.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,16 +43,24 @@ public class Day8 {
         return result;
     }
 
-    public int getTask1AntinodesNumber() {
-        long time = System.nanoTime();
-        int size = 0;
-        for(int i = 0; i < 1000; i++) {
-            size = getTask1Antinodes().size();
-        }
-        long timePassed = System.nanoTime() - time;
-        System.out.println("Took: " + (double) timePassed / 1000 / 1000000  + "ms");
+    public Set<Point> getTask2Antinodes() {
+        Set<Point> result = new HashSet<>();
+        antennas.keySet().forEach(it -> {
+            getAntennasPairs(it).forEach(pointsPair -> {
+                result.addAll(getAntinodesTask2(pointsPair));
+            });
 
-        return size;
+        });
+
+        return result;
+    }
+
+    public int getTask1AntinodesNumber() {
+        return StopWatchGauge.run(() -> getTask1Antinodes().size(), 1000, Task.FIRST);
+    }
+
+    public int getTask2AntinodesNumber() {
+        return StopWatchGauge.run(() -> getTask2Antinodes().size(), 1000, Task.SECOND);
     }
 
     private Set<Point> getAntinodes(PairWithoutOrder<Point, Point> pointsPair) {
@@ -75,6 +85,36 @@ public class Day8 {
         if (isPointValid(secondeAntenode)) {
             result.add(secondeAntenode);
         }
+
+        return result;
+    }
+
+    private Set<Point> getAntinodesTask2(PairWithoutOrder<Point, Point> pointsPair) {
+        Set<Point> result = new HashSet<>();
+
+        Point firstPoint = pointsPair.getLeft();
+        Point secondPoint = pointsPair.getRight();
+
+        // 6,5 and 8,9 = 2,4 -> 8 - 2 = 4
+        // 8,9 and 6,5 = -2,-4 -> 8 - (-2) = 10
+        // 6,5 and 8,1 =2,-4 -> y = 5 - (-4) = 9
+        int differenceOnX = secondPoint.getLeft() - firstPoint.getLeft();
+        int differenceOnY = secondPoint.getRight() - firstPoint.getRight();
+
+        Point currentAntenode = new Point(firstPoint.getLeft() - differenceOnX, firstPoint.getRight() - differenceOnY);
+        while(isPointValid(currentAntenode)) {
+            result.add(currentAntenode);
+            currentAntenode = new Point(currentAntenode.getLeft() - differenceOnX, currentAntenode.getRight() - differenceOnY);
+        }
+
+        currentAntenode = new Point(secondPoint.getLeft() + differenceOnX, secondPoint.getRight() + differenceOnY);;
+        while(isPointValid(currentAntenode)) {
+            result.add(currentAntenode);
+            currentAntenode = new Point(currentAntenode.getLeft() + differenceOnX, currentAntenode.getRight() + differenceOnY);;
+        }
+
+        result.add(firstPoint);
+        result.add(secondPoint);
 
         return result;
     }
