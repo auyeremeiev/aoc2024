@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ListUtils {
 
@@ -53,12 +54,17 @@ public class ListUtils {
         return Optional.empty();
     }
 
+
     public static List<List<Integer>> createMatrix(int numberOfRows, int numberOfColumns) {
-        List<List<Integer>> matrix = new ArrayList<>();
+        return createMatrix(numberOfRows, numberOfColumns, () -> 0);
+    }
+
+    public static <T> List<List<T>> createMatrix(int numberOfRows, int numberOfColumns, Supplier<T> defaultValueSuppler) {
+        List<List<T>> matrix = new ArrayList<>();
         for (int i = 0; i < numberOfRows; i++) {
-            List<Integer> line = new ArrayList<>();
+            List<T> line = new ArrayList<>();
             for (int j = 0; j < numberOfColumns; j++) {
-                line.add(0);
+                line.add(defaultValueSuppler.get());
             }
             matrix.add(line);
         }

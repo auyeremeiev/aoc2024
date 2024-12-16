@@ -114,7 +114,7 @@ class Day9Test {
 
     @Test
     public void measureSpeed() {
-        StopWatchGauge.run(() -> new Day9(Day9Input.TASK_1_FULL).getTask1ResultSum(), 10, Task.SECOND);
+        StopWatchGauge.run(() -> new Day9(Day9Input.TASK_1_FULL).getTask1ResultSum(), 10, Task.FIRST);
         StopWatchGauge.run(() -> new Day9(Day9Input.TASK_2_FULL).getTask2ResultSum(), 10, Task.SECOND);
     }
 }
