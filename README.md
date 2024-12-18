@@ -9,4 +9,5 @@ I didn't measure all the tasks I did. Here is the table of those I measured:
 | 8   | 0.01ms | 0.2ms |
 | 9   |  2ms   |  52ms |
 | 10  | 1.8ms  | 0.9ms |
+| 11  |  5ms   |  73ms |
 

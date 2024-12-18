@@ -1,5 +1,7 @@
 package aoc2024.common;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Pair<L, R> {
@@ -39,5 +41,9 @@ public class Pair<L, R> {
 
     public static <L, R> Pair<L, R> of(L left, R right) {
         return new Pair<>(left, right);
+    }
+
+    public static <T> List<T> toList(Pair<T, T> pair) {
+        return new ArrayList<>(List.of(pair.getLeft(), pair.getRight()));
     }
 }

@@ -44,6 +44,15 @@ public class Number {
         return left;
     }
 
+    public static Pair<Long, Long> split(long number, int numberOfDigits) {
+        int newLeftSize = numberOfDigits / 2;
+        int newRightSize = numberOfDigits - newLeftSize;
+
+        long base = (long) pow(10L, newRightSize);
+        // 123[456]
+        return new Pair<>(number % base, number / base);
+    }
+
     public static long concatLog10(long left, long right) {
         if (right == 0) {
             return left * 10L;
