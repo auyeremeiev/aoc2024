@@ -21,7 +21,7 @@ class Day11Test {
 
     @Test
     public void testLong() {
-        assertEquals(55312L, new Day11("4022724 951333 0 21633 5857 97 702 6", 75).getStonesNumberTask1());
+        assertEquals(250783680217283L, new Day11("4022724 951333 0 21633 5857 97 702 6", 75).getStonesNumberTask1());
     }
 
     @Test

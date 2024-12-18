@@ -91,14 +91,6 @@ public class Number {
     }
 
     public static int digits(long number) {
-        if (number == 0) {
-            return 0;
-        }
-        int result = 1;
-        while(number / 10 != 0) {
-            number /= 10;
-            result++;
-        }
-        return result;
+        return (int) log10(number) + 1;
     }
 }
