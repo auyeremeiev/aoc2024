@@ -169,4 +169,32 @@ public class ListUtils {
         List<String> stringifiedList = list.stream().map(Object::toString).toList();
         return "[" + String.join(", ", stringifiedList) + "]";
     }
+
+    public static <T> boolean isBehindEdge(List<List<T>> field, Point point) {
+        if (point.getLeft() < 0 || point.getRight() < 0) {
+            return true;
+        }
+
+        if (point.getLeft() >= field.size()) {
+            return true;
+        }
+
+        return point.getRight() >= field.get(point.getLeft()).size();
+    }
+
+    public static <T> boolean isAtEdge(List<List<T>> field, Point point) {
+        if (point.getLeft() == 0 || point.getRight() == 0) {
+            return true;
+        }
+
+        if (point.getLeft() == field.size() - 1) {
+            return true;
+        }
+
+        return point.getRight() == field.get(point.getLeft()).size() - 1;
+    }
+
+    public static <T> T get(List<List<T>> field, Point point) {
+        return field.get(point.getLeft()).get(point.getRight());
+    }
 }
