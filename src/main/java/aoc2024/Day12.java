@@ -24,9 +24,19 @@ public class Day12 {
     private final int width;
 
     public Day12(String input) {
-        garden = input.lines().map(it -> it.chars().mapToObj(charc -> (char) charc).toList()).toList();
+        garden = parseInput(input);
         height = garden.size();
         width = garden.get(0).size();
+    }
+
+    public Day12(List<List<Character>> garden) {
+        this.garden = garden;
+        height = garden.size();
+        width = garden.get(0).size();
+    }
+
+    public static List<List<Character>> parseInput(String input) {
+        return input.lines().map(it -> it.chars().mapToObj(charc -> (char) charc).toList()).toList();
     }
 
     public Long getTask1Result() {

@@ -2,6 +2,7 @@ package aoc2024;
 
 import aoc2024.common.StopWatchGauge;
 import aoc2024.common.Task;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static aoc2024.inputs.Day12Input.FULL;
@@ -41,8 +42,10 @@ class Day12Test {
 
     @Test
     public void measureSpeed() {
-        StopWatchGauge.run(() -> new Day12(FULL).getTask1Result(), 10, Task.FIRST);
-        StopWatchGauge.run(() -> new Day12(FULL).getTask2Result(), 10, Task.FIRST);
+        List<List<Character>> input = Day12.parseInput(FULL);
+
+        StopWatchGauge.run(() -> new Day12(input).getTask1Result(), 100, Task.FIRST);
+        StopWatchGauge.run(() -> new Day12(input).getTask2Result(), 100, Task.FIRST);
 //        StopWatchGauge.run(() -> new Day11("4022724 951333 0 21633 5857 97 702 6", 75).getStonesNumberTask1(), 10, Task.SECOND);
     }
 
