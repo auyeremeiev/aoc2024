@@ -8,6 +8,8 @@ import static aoc2024.inputs.Day12Input.FULL;
 import static aoc2024.inputs.Day12Input.SHORT_1;
 import static aoc2024.inputs.Day12Input.SHORT_2;
 import static aoc2024.inputs.Day12Input.SHORT_3;
+import static aoc2024.inputs.Day12Input.SHORT_4;
+import static aoc2024.inputs.Day12Input.SHORT_5;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Day12Test {
@@ -21,12 +23,26 @@ class Day12Test {
 
     @Test
     public void testTask1Full() {
-        assertEquals(140, new Day12(FULL).getTask1Result());
+        assertEquals(1375476, new Day12(FULL).getTask1Result());
+    }
+
+    @Test
+    public void testTask2Short() {
+        assertEquals(80, new Day12(SHORT_1).getTask2Result());
+        assertEquals(436, new Day12(SHORT_2).getTask2Result());
+        assertEquals(236, new Day12(SHORT_4).getTask2Result());
+        assertEquals(368, new Day12(SHORT_5).getTask2Result());
+    }
+
+    @Test
+    public void testTask2Full() {
+        assertEquals(1375476, new Day12(FULL).getTask2Result());
     }
 
     @Test
     public void measureSpeed() {
         StopWatchGauge.run(() -> new Day12(FULL).getTask1Result(), 10, Task.FIRST);
+        StopWatchGauge.run(() -> new Day12(FULL).getTask2Result(), 10, Task.FIRST);
 //        StopWatchGauge.run(() -> new Day11("4022724 951333 0 21633 5857 97 702 6", 75).getStonesNumberTask1(), 10, Task.SECOND);
     }
 

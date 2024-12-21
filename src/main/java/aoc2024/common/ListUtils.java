@@ -165,6 +165,12 @@ public class ListUtils {
         return Optional.empty();
     }
 
+    public static <T> void fill(List<T> list, T value, int size) {
+        for (int i = 0; i < size; i++) {
+            list.add(value);
+        }
+    }
+
     public static <T> String printList(List<T> list) {
         List<String> stringifiedList = list.stream().map(Object::toString).toList();
         return "[" + String.join(", ", stringifiedList) + "]";

@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import static aoc2024.common.Direction.DOWN;
+import static aoc2024.common.Direction.LEFT;
+import static aoc2024.common.Direction.RIGHT;
 import static aoc2024.common.Direction.UP;
 import static aoc2024.common.ListUtils.isBeyoundEdge;
 
@@ -30,6 +34,13 @@ public class Day12 {
 
         List<Day12Region> regions = getAllRegions(regionsMap);
         return regions.stream().map(this::calculatePrice).reduce(0L, Long::sum);
+    }
+
+    public Long getTask2Result() {
+        List<List<Integer>> regionsMap = ListUtils.createMatrix(height, width);
+
+        List<Day12Region> regions = getAllRegions(regionsMap);
+        return regions.stream().map(this::calculatePrice2).reduce(0L, Long::sum);
     }
 
     public List<Day12Region> getAllRegions(List<List<Integer>> regionsMap) {
@@ -103,10 +114,108 @@ public class Day12 {
         return calculatePerimeter(region) * region.getPoints().size();
     }
 
+    private long calculatePrice2(Day12Region region) {
+        return calculateSides(region) * region.getPoints().size();
+    }
+
     private long calculatePerimeter(Day12Region region) {
         Set<Point> allEdgePoints = new HashSet<>(region.getEdgePoints());
-        return allEdgePoints.stream().map(it -> getFences(region, it)).map(Set::size).reduce(0, Integer::sum);
+        return allEdgePoints.stream().flatMap(it -> getFences(region, it).stream()).collect(Collectors.toSet()).size();
     }
+
+    private long calculateSides(Day12Region region) {
+        Set<Point> allEdgePoints = new HashSet<>(region.getEdgePoints());
+        Set<Pair<Point, Point>> fences = new HashSet<>();
+        allEdgePoints.forEach(it -> fences.addAll(getFences(region, it)));
+        Set<Set<Pair<Point, Point>>> squashedFences = squashFences(fences);
+
+        return squashedFences.size();
+    }
+
+    private Set<Set<Pair<Point, Point>>> squashFences(Set<Pair<Point, Point>> fences) {
+        Set<Set<Pair<Point, Point>>> sides = new HashSet<>();
+        sides.addAll(getHorizontalSides(fences));
+        sides.addAll(getVerticalSides(fences));
+        return sides;
+    }
+
+    private Set<Set<Pair<Point, Point>>> getHorizontalSides(Set<Pair<Point, Point>> fences) {
+        Set<Set<Pair<Point, Point>>> result = new HashSet<>();
+
+        Set<Pair<Point, Point>> horizontalFences = new HashSet<>(fences.stream()
+                .filter(it -> Direction.getDirection(it.getLeft(), it.getRight()).isVertical())
+                .collect(Collectors.toSet()));
+
+        while (!horizontalFences.isEmpty()) {
+            Set<Pair<Point, Point>> side = new HashSet<>();
+            Pair<Point, Point> initialFence = horizontalFences.stream().findFirst().orElseThrow();
+            side.add(initialFence);
+            horizontalFences.remove(initialFence);
+
+            Pair<Point, Point> nextFence = shiftFence(initialFence, LEFT);
+
+            while (horizontalFences.contains(nextFence)) {
+                side.add(nextFence);
+                horizontalFences.remove(nextFence);
+                nextFence = shiftFence(nextFence, LEFT);
+            }
+
+            nextFence = shiftFence(initialFence, RIGHT);
+
+            while (horizontalFences.contains(nextFence)) {
+                side.add(nextFence);
+                horizontalFences.remove(nextFence);
+                nextFence = shiftFence(nextFence, RIGHT);
+            }
+
+            result.add(side);
+        }
+
+        return result;
+    }
+
+    private Set<Set<Pair<Point, Point>>> getVerticalSides(Set<Pair<Point, Point>> fences) {
+        Set<Set<Pair<Point, Point>>> result = new HashSet<>();
+
+        Set<Pair<Point, Point>> verticalFences = new HashSet<>(fences.stream()
+                .filter(it -> Direction.getDirection(it.getLeft(), it.getRight()).isHorizontal())
+                .collect(Collectors.toSet()));
+
+        while (!verticalFences.isEmpty()) {
+            Set<Pair<Point, Point>> side = new HashSet<>();
+            Pair<Point, Point> initialFence = verticalFences.stream().findFirst().orElseThrow();
+            side.add(initialFence);
+            verticalFences.remove(initialFence);
+
+            Pair<Point, Point> nextFence = shiftFence(initialFence, UP);
+
+            while (verticalFences.contains(nextFence)) {
+                side.add(nextFence);
+                verticalFences.remove(nextFence);
+                nextFence = shiftFence(nextFence, UP);
+            }
+
+            nextFence = shiftFence(initialFence, DOWN);
+
+            while (verticalFences.contains(nextFence)) {
+                side.add(nextFence);
+                verticalFences.remove(nextFence);
+                nextFence = shiftFence(nextFence, DOWN);
+            }
+
+            result.add(side);
+        }
+
+        return result;
+    }
+
+    private Pair<Point, Point> shiftFence(Pair<Point, Point> fence, Direction direction) {
+        return new Pair<>(
+                direction.nextPoint(fence.getLeft()),
+                direction.nextPoint(fence.getRight())
+        );
+    }
+
 
     private Set<Pair<Point, Point>> getFences(
             Day12Region region,
@@ -123,36 +232,4 @@ public class Day12 {
 
         return fences;
     }
-
-//    private Optional<FindDirectionResult> findDirection(
-//            Day12Region region,
-//            Point edgePoint,
-//            Direction currentDirection) {
-//        currentDirection = currentDirection.switchCounterClockWise();
-//        for (int i = 0; i < 4; i++) {
-//            Point nextPoint = currentDirection.nextPoint(edgePoint);
-//            if (region.getPoints().contains(nextPoint)) {
-//                return Optional.of(new FindDirectionResult(currentDirection, nextPoint, i));
-//            }
-//            currentDirection = currentDirection.switchClockWise();
-//        }
-//
-//        // It will happen when the region is a single point
-//        return Optional.empty();
-//    }
-//
-//    private FindDirectionResult findFirstFencingPoint(
-//            Day12Region region,
-//            Point edgePoint) {
-//        Direction currentDirection = UP;
-//        for (int i = 0; i < 4; i++) {
-//            Point nextPoint = currentDirection.nextPoint(edgePoint);
-//            if (!region.getPoints().contains(nextPoint)) {
-//                return new FindDirectionResult(currentDirection, nextPoint, i);
-//            }
-//            currentDirection = currentDirection.switchClockWise();
-//        }
-//
-//        throw new IllegalStateException("Didn't find first fencing point. The point is not in the edge");
-//    }
 }

@@ -30,6 +30,23 @@ public class Day12Input {
             MMMISSJEEE
             """;
 
+    public static final String SHORT_4 = """
+            EEEEE
+            EXXXX
+            EEEEE
+            EXXXX
+            EEEEE
+            """;
+
+    public static final String SHORT_5 = """
+            AAAAAA
+            AAABBA
+            AAABBA
+            ABBAAA
+            ABBAAA
+            AAAAAA
+            """;
+
     public static final String FULL = """
             RRRRRRRRRRRRRRRRKKKKKKKKRRRRRRRRRRRRRRRRRRRROOPOOOOOOOOGOOONYYYYYYEDDDDDDDDDDDLLLLLLLLOOOOOOOOOOOOOOOXVVXHHHHHHHHHHLLLLLLLLLLLLLLJJJJJJJJJJC
             RRRRRRRRRRRRRRRRKKKKKKKKKRRRRRRRRRRRRRRRRRRRROOOOOOOOOOOOOOYXYYYYKEDDDDDDDIIIDLLLLLLLLLLOOOOOOOOOOOOOXXXXHHHHHHHLLLLLLLLLLLLLLLLJJJJJJJJJJJC
