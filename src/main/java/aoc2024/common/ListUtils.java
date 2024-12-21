@@ -170,7 +170,7 @@ public class ListUtils {
         return "[" + String.join(", ", stringifiedList) + "]";
     }
 
-    public static <T> boolean isBehindEdge(List<List<T>> field, Point point) {
+    public static <T> boolean isBeyoundEdge(List<List<T>> field, Point point) {
         if (point.getLeft() < 0 || point.getRight() < 0) {
             return true;
         }

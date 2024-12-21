@@ -32,7 +32,7 @@ public enum Direction {
         };
     }
 
-    public Point move(Point point) {
+    public Point nextPoint(Point point) {
         return switch (this) {
             case UP -> new Point(point.getLeft() - 1, point.getRight());
             case LEFT -> new Point(point.getLeft(), point.getRight() - 1);
