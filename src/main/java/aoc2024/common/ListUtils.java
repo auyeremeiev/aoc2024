@@ -83,7 +83,7 @@ public class ListUtils {
         return matrix;
     }
 
-    public static String printMatrix(List<List<?>> matrix) {
+    public static <T> String printMatrix(List<List<T>> matrix) {
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < matrix.size(); i++) {

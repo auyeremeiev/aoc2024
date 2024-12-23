@@ -12,7 +12,7 @@ public class StopWatchGauge {
     private static final Logger log = LogManager.getLogger(StopWatchGauge.class);
 
     public static <T> T run(Supplier<T> supplier, Task task) {
-        return run(supplier, 0, task);
+        return run(supplier, 1, task);
     }
 
     public static <T> T runReliably(Supplier<T> supplier, Task task) {
