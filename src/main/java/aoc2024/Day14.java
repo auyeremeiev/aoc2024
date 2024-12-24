@@ -7,8 +7,10 @@ import aoc2024.common.StopWatchGauge;
 import aoc2024.helpers.Day14RobotData;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,6 +60,7 @@ public class Day14 {
         return countFinalResult(finalPositions);
     }
 
+    // Can be improved by using variance and then Chinese Remainder Theorem
     public int getTask2Result() {
         int currentSecond = 0;
 
@@ -77,6 +80,25 @@ public class Day14 {
         return robots.stream()
                 .map(robot -> getFinalPosition(robot, currentSecond))
                 .collect(Collectors.toSet());
+    }
+
+    public Map<Point, Map<Point, Integer>> getAllPositionsWithin(int seconds) {
+        Map<Point, Map<Point, Integer>> result = new HashMap<>();
+        robots.stream().forEach(robot -> {
+            Map<Point, Integer> pointsPositions = new HashMap<>();
+            for (int i = 0; i < seconds; i++) {
+                Point position = getFinalPosition(robot, i);
+                pointsPositions.compute(position, (k, v) -> {
+                    if (v == null) {
+                        v = 0;
+                    }
+                    v++;
+                    return v;
+                });
+            }
+            result.put(robot.startingPoint(), pointsPositions);
+        });
+        return result;
     }
 
     private Point getFinalPosition(Day14RobotData robot, int seconds) {

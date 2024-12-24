@@ -4,6 +4,7 @@ import aoc2024.common.Point;
 import aoc2024.common.StopWatchGauge;
 import aoc2024.common.Task;
 import aoc2024.inputs.Day14Input;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +48,12 @@ class Day14Test {
 
         assertEquals(10, Day14.pointsInVerticalLine(points, new Point(3, 1), 10).size());
         assertTrue(Day14.containsAnyShape(points));
+    }
+
+    @Test
+    public void testAllPositions() {
+        Map<Point, Map<Point, Integer>> allPositionsWithin = new Day14(Day14.parseInput(Day14Input.FULL)).getAllPositionsWithin(12000);
+        assertEquals(489, allPositionsWithin.size());
     }
 
 
